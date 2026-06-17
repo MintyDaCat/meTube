@@ -27,6 +27,8 @@ const vids = [
 function loadPage() {
     videoGridWrapper.innerHTML = ""
 
+    player.pause();
+
     videoPlayer.classList.remove('active');
     homePage.classList.add('active');
 
