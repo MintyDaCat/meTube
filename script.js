@@ -6,9 +6,18 @@ const videoGridWrapper = document.getElementById("video-grid-wrapper");
 const videoPlayer = document.getElementById("video-player");
 const icon = document.getElementById("icon");
 const player = document.getElementById("player");
-const videoSource = document.getElementById("video-source")
+const videoSource = document.getElementById("video-source");
+const uploadButton = document.getElementById("Upload-button");
+const uploadContainer = document.getElementById("Upload-container");
+const uploadStart = document.getElementById("Upload-start");
+const uploadEdit = document.getElementById("Upload-edit");
+const filePicker = document.getElementById("file-picker");
+const uploadHeader = document.getElementById("Upload-header");
+const videoPreviewSource = document.getElementById("video-preview-source");
+const videoPlayerPreview = document.getElementById("video-player-preview")
 
 let guideOpened = false;
+let uploadOpened = false;
 
 const vids = [
     {
@@ -48,8 +57,6 @@ function loadPage() {
         videoCard.dataset.name = video.name;
         videoCard.dataset.thumbnail = video.thumbnail;
 
-        console.log(videoCard.dataset)
-
         videoCard.addEventListener('click', openVideo);
 
         videoGridWrapper.appendChild(videoCard);
@@ -59,7 +66,21 @@ function loadPage() {
     });
 }
 
-loadPage()
+function startUpload() {
+    uploadOpened = !uploadOpened;
+
+    console.log(uploadOpened)
+    if (uploadOpened) {
+        uploadHeader.classList.add("active");
+
+        uploadStart.classList.add("active");
+        uploadEdit.classList.remove("active");
+
+
+    } else {
+        uploadHeader.classList.remove("active");
+    }
+}
 
 function openVideo(Event) {
     homePage.classList.remove('active');
@@ -90,4 +111,15 @@ function toggleGuide() {
 }
 
 guideButton.addEventListener('click', toggleGuide);
+uploadButton.addEventListener('click', startUpload);
 icon.addEventListener('click', loadPage);
+
+loadPage()
+
+filePicker.addEventListener('change', async (e) => {
+    uploadStart.classList.remove('active')
+    uploadEdit.classList.add('active')
+
+    videoPreviewSource.src = URL.createObjectURL(e.currentTarget.files[0]);
+    videoPlayerPreview.load()
+})
