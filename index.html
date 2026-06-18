@@ -13,6 +13,42 @@
             <button>Home</button>
             <button>shorts</button>
         </div>
+
+        <div class="Upload-header" id="Upload-header">
+            <div class="Upload" id="Upload-container">
+                <div class="upload-screen-container" id="Upload-start">
+                    <div class="upload-screen start">
+                        <input id="file-picker" type="file" accept="video/mp4">
+                    </div>
+                </div>
+                
+                <div class="upload-screen-container" id="Upload-edit">
+                    <div class="upload-screen edit">
+                        <div class="upload-div-vertical up">
+                            <div class="upload-div left">
+                                <input type="text" class="Upload-input title">
+                                <textarea class="Upload-input description"></textarea>
+                            </div>
+
+                            <div class="upload-div rigth">
+                                <video id="video-player-preview" controls>
+                                    <source id="video-preview-source" src="">
+                                </video>
+                            </div>
+                        </div>
+
+                        <div class="upload-div-vertical down">
+                            <div class="upload-div Publish">
+                                <button>Publish!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            
+            </div>
+        </div>
+        
         
         <div class="main">
             <div class="top-bar">
@@ -25,10 +61,14 @@
                 </div>
 
                 <div class="search-bar">
-                    <textarea></textarea>
+                    <input type="text">
                 </div>
 
-                <div class="buttons"></div>
+                <div class="buttons">
+                    <div id="Upload-button" role="button">
+                        <p>Upload</p>
+                    </div>
+                </div>
             </div>
 
             <div class="screen active" id="home-page">
