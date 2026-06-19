@@ -188,6 +188,19 @@ function toggleGuide() {
 
 // ⚡️ THE FINAL, LOCKED FRONTEND PUBLISH CONTROLLER ⚡️
 async function publishContent() {
+    // Make sure server is warm before uploading
+    publishButton.disabled = true;
+    publishButton.innerText = "Waking up server...";
+    
+    try {
+        await fetch('https://metube-serverside.onrender.com/api/status');
+    } catch(e) {
+        alert("Server is offline. Try again in 40 seconds!");
+        publishButton.disabled = false;
+        publishButton.innerText = "Publish Content";
+        return;
+    }
+    
     const selectedFile = filePicker.files[0];
     const descText = uploadDescInput.value.trim();
     
