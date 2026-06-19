@@ -179,49 +179,73 @@ function toggleGuide() {
 }
 
 async function publishContent() {
-    console.log("started upload");
-    const selectedFile = filePicker.files[0];
-    let titleText = uploadTitleInput.value.trim()
-    const descText = uploadDescInput.value.trim()
+    const selectedFile = filePicker.files[0]; // Isolate the target single file object from the PC array index
+    const descText = uploadDescInput.value.trim();
+    
+    let titleText = uploadTitleInput.value.trim();
+    if (!titleText) {
+        titleText = new Date().toLocaleDateString(); 
+    }
 
     if (!selectedFile) {
+        alert("Please browse files and pick an .mp4 clip first!");
         return;
     }
 
-    if (!titleText) {
-        titleText = new Date().toLocaleDateString();
-    }
+    // Lock your layout actions button bar to prevent duplicate spam click loops
+    publishButton.disabled = true;
+    publishButton.innerText = "Intermediary Stream routing via Supabase Cloud...";
 
-    const uploadBundle = new FormData();
-    uploadBundle.append('videoFile', selectedFile);
-    uploadBundle.append('title', titleText);
-    uploadBundle.append('description', descText);
-
-    console.log('trying to fetch')
-    
     try {
-        console.log('started')
-        const response = await fetch('https://igjlltuasnylbqnsbugm.supabase.co/functions/v1/github-upload', {
+        // 🚀 THE DIRECT BINARY NET STREAM ROUTER: Pass the file data directly as the body!
+        const response = await fetch('https://supabase.co', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`, 
-                'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` // 💥 ADD THIS LINE TO CURE THE UNAUTHORIZED ERROR!
+                // Ensure you paste your exact, long public anon key string in BOTH fields below!
+                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`, 
+                'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`,
+                'x-file-name': selectedFile.name,
+                'x-video-title': titleText
             },
-            body: uploadBundle
+            body: selectedFile // Streams the raw file bytes directly across the network wire!
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            alert(`🎉 Success! Video uploaded safely through your secure cloud middleman.`);
+            alert(`🎉 Success! Video safely processed through Supabase and saved on GitHub.`);
+            
+            // ⚡️ DYNAMIC MEMORY INJECTION: Inject the object dynamically into your running array
+            const newbornVideoCardObject = {
+                name: titleText,
+                thumbnail: "", // Left blank to trigger your video-frame automatic fallback!
+                src: data.downloadUrl,
+                type: "video"
+            };
+
+            // Push it onto your active runtime memory array stack
+            vids.unshift(newbornVideoCardObject); 
+
+            // Re-fire your working NRY layout template function to draw the newborn card onto the grid instantly!
+            loadPage();
+
+            // Clear out local form field values parameters memory slots
+            uploadTitleInput.value = "";
+            uploadDescInput.value = "";
+            filePicker.value = "";
         } else {
             alert(`Upload Blocked: ${data.error || 'Server error'}`);
         }
 
     } catch (err) {
-        console.log(err);
-    };
+        console.error("Cloud pipeline transaction crash:", err);
+        alert("Network Error linking with your cloud middleman layers.");
+    } finally {
+        publishButton.disabled = false;
+        publishButton.innerText = "Publish Content";
+    }
 
+    // ✕ SLAM THE WINDOW DOOR: Remove your OS active layer frames cleanly to return home
     uploadStart.classList.remove('active');
     uploadEdit.classList.remove('active');
     uploadHeader.classList.remove('active');
