@@ -19,11 +19,11 @@ const publishButton = document.getElementById("Publish-button");
 const uploadTitleInput = document.getElementById("Upload-title");
 const uploadDescInput = document.getElementById("Upload-desc");
 
-fetch('https://metube-serverside.onrender.com/health')
+fetch('https://metube-serverside.onrender.com/api/status')
     .catch(() => {}); // silently ignore failures
 
 setInterval(() => {
-    fetch('https://metube-serverside.onrender.com/health')
+    fetch('https://metube-serverside.onrender.com/api/status')
         .catch(() => {}); // silently ignore failures
 }, 4 * 60 * 1000);
 
