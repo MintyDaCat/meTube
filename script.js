@@ -19,13 +19,15 @@ const publishButton = document.getElementById("Publish-button");
 const uploadTitleInput = document.getElementById("Upload-title");
 const uploadDescInput = document.getElementById("Upload-desc");
 
-fetch('https://metube-serverside.onrender.com/api/status')
-    .catch(() => {}); // silently ignore failures
+// Warm up the server on page load
+async function warmUpServer() {
+    try {
+        await fetch('https://metube-serverside.onrender.com/api/status');
+    } catch (e) {}
+}
 
-setInterval(() => {
-    fetch('https://metube-serverside.onrender.com/api/status')
-        .catch(() => {}); // silently ignore failures
-}, 4 * 60 * 1000);
+// Call immediately on load
+warmUpServer();
 
 let guideOpened = false;
 let uploadOpened = false;
