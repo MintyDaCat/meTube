@@ -199,7 +199,7 @@ async function publishContent() {
 
     try {
         // 🚀 TARGETING YOUR EXACT CHANNELS WITH YOUR LIVE ENCRYPTED TOKENS 🚀
-        const response = await fetch('https://supabase.co', {
+        const response = await fetch('https://igjlltuasnylbqnsbugm.supabase.co/functions/v1/github-upload', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`, 
