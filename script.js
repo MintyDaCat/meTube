@@ -178,8 +178,9 @@ function toggleGuide() {
     }
 }
 
+// ⚡️ THE FINAL, LOCKED FRONTEND PUBLISH CONTROLLER ⚡️
 async function publishContent() {
-    const selectedFile = filePicker.files[0]; // Isolate the target single file object from the PC array index
+    const selectedFile = filePicker.files[0]; // Isolates the raw file bytes cleanly
     const descText = uploadDescInput.value.trim();
     
     let titleText = uploadTitleInput.value.trim();
@@ -194,14 +195,13 @@ async function publishContent() {
 
     // Lock your layout actions button bar to prevent duplicate spam click loops
     publishButton.disabled = true;
-    publishButton.innerText = "Intermediary Stream routing via Supabase Cloud...";
+    publishButton.innerText = "Streaming to Cloud Middleman...";
 
     try {
-        // 🚀 THE DIRECT BINARY NET STREAM ROUTER: Pass the file data directly as the body!
+        // 🚀 TARGETING YOUR EXACT CHANNELS WITH YOUR LIVE ENCRYPTED TOKENS 🚀
         const response = await fetch('https://supabase.co', {
             method: 'POST',
             headers: {
-                // Ensure you paste your exact, long public anon key string in BOTH fields below!
                 'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`, 
                 'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`,
                 'x-file-name': selectedFile.name,
@@ -215,19 +215,16 @@ async function publishContent() {
         if (response.ok) {
             alert(`🎉 Success! Video safely processed through Supabase and saved on GitHub.`);
             
-            // ⚡️ DYNAMIC MEMORY INJECTION: Inject the object dynamically into your running array
+            // Inject the object dynamically into your running array
             const newbornVideoCardObject = {
                 name: titleText,
-                thumbnail: "", // Left blank to trigger your video-frame automatic fallback!
+                thumbnail: "", // Trigger your automatic video-frame fallback!
                 src: data.downloadUrl,
                 type: "video"
             };
 
-            // Push it onto your active runtime memory array stack
             vids.unshift(newbornVideoCardObject); 
-
-            // Re-fire your working NRY layout template function to draw the newborn card onto the grid instantly!
-            loadPage();
+            loadPage(); // Re-render your home grid timeline instantly!
 
             // Clear out local form field values parameters memory slots
             uploadTitleInput.value = "";
