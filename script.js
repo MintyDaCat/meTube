@@ -180,7 +180,7 @@ function toggleGuide() {
 
 // ⚡️ THE FINAL, LOCKED FRONTEND PUBLISH CONTROLLER ⚡️
 async function publishContent() {
-    const selectedFile = filePicker.files[0]; // Isolate the target raw file item
+    const selectedFile = filePicker.files[0];
     const descText = uploadDescInput.value.trim();
     
     let titleText = uploadTitleInput.value.trim();
@@ -193,20 +193,18 @@ async function publishContent() {
         return;
     }
 
-    // Pack everything inside a stable binary envelope block
     const uploadBundle = new FormData();
-    uploadBundle.append('videoFile', selectedFile);
-    uploadBundle.append('title', titleText);
+    uploadBundle.append('video', selectedFile);        // ✅ matches server field name
+    uploadBundle.append('name', titleText);            // ✅ matches server field name
     uploadBundle.append('description', descText);
 
     publishButton.disabled = true;
     publishButton.innerText = "Streaming to Cloud Server...";
 
     try {
-        // 🚀 TARGET YOUR PERMANENT RENDER BACKEND STREAM ADDRESS LINK!
-        const response = await fetch('https://metube-serverside.onrender.com', {
+        const response = await fetch('https://metube-serverside.onrender.com/api/upload', {  // ✅ correct path
             method: 'POST',
-            body: uploadBundle // Browser natively scales boundary headers
+            body: uploadBundle
         });
 
         const data = await response.json();
@@ -214,23 +212,21 @@ async function publishContent() {
         if (response.ok) {
             alert(`🎉 Success! Video safely processed through server and saved on GitHub.`);
             
-            // Build the card entry dynamically in frontend memory without hard reloads
             const newbornVideoCardObject = {
-                name: titleText,
-                thumbnail: "", // Keeps your excellent video-frame snapshot fallback active!
-                src: data.downloadUrl,
+                name: data.video.name,
+                thumbnail: data.video.thumbnail_url || "",
+                src: data.video.video_url,             // ✅ correct response field
                 type: "video"
             };
 
             vids.unshift(newbornVideoCardObject); 
-            loadPage(); // Re-render your home grid timeline instantly!
+            loadPage();
 
-            // Clear inputs text field caches completely
             uploadTitleInput.value = "";
             uploadDescInput.value = "";
             filePicker.value = "";
         } else {
-            alert(`Upload Blocked: ${data.message || 'Server error'}`);
+            alert(`Upload Blocked: ${data.error || 'Server error'}`);  // ✅ server returns `error`, not `message`
         }
 
     } catch (err) {
