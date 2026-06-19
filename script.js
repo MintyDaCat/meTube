@@ -19,6 +19,9 @@ const publishButton = document.getElementById("Publish-button");
 const uploadTitleInput = document.getElementById("Upload-title");
 const uploadDescInput = document.getElementById("Upload-desc");
 
+fetch('https://metube-serverside.onrender.com/health')
+    .catch(() => {}); // silently ignore failures
+
 setInterval(() => {
     fetch('https://metube-serverside.onrender.com/health')
         .catch(() => {}); // silently ignore failures
