@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Widescreen Drone Footage Vlog",
+        "thumbnail": "https://picsum.photos",
+        "src": "https://github.com",
+        "type": "video"
+    },
+    {
+        "name": "Insane Chess Checkmate Speedrun",
+        "thumbnail": "https://picsum.photos",
+        "src": "https://github.com",
+        "type": "short"
+    }
+]
