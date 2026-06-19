@@ -231,6 +231,7 @@ async function publishContent() {
         });
 
         const data = await response.json();
+        console.log("Server response:", data);
 
         if (response.ok) {
             alert(`🎉 Success! Video safely processed through server and saved on GitHub.`);
