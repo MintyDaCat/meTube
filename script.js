@@ -180,7 +180,7 @@ function toggleGuide() {
 
 // ⚡️ THE FINAL, LOCKED FRONTEND PUBLISH CONTROLLER ⚡️
 async function publishContent() {
-    const selectedFile = filePicker.files[0]; // Isolates the raw file bytes cleanly
+    const selectedFile = filePicker.files[0]; // Isolate the target raw file item
     const descText = uploadDescInput.value.trim();
     
     let titleText = uploadTitleInput.value.trim();
@@ -193,32 +193,31 @@ async function publishContent() {
         return;
     }
 
-    // Lock your layout actions button bar to prevent duplicate spam click loops
+    // Pack everything inside a stable binary envelope block
+    const uploadBundle = new FormData();
+    uploadBundle.append('videoFile', selectedFile);
+    uploadBundle.append('title', titleText);
+    uploadBundle.append('description', descText);
+
     publishButton.disabled = true;
-    publishButton.innerText = "Streaming to Cloud Middleman...";
+    publishButton.innerText = "Streaming to Cloud Server...";
 
     try {
-        // 🚀 TARGETING YOUR EXACT CHANNELS WITH YOUR LIVE ENCRYPTED TOKENS 🚀
-        const response = await fetch('https://igjlltuasnylbqnsbugm.supabase.co/functions/v1/github-upload', {
+        // 🚀 TARGET YOUR PERMANENT RENDER BACKEND STREAM ADDRESS LINK!
+        const response = await fetch('https://metube-serverside.onrender.com', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`, 
-                'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamxsdHVhc255bGJxbnNidWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTc4OTIsImV4cCI6MjA5NzM3Mzg5Mn0.rUAEKLhY74zBPjvO9YPUHqJ7kcHWzkRxT3xhb9WGwD4`,
-                'x-file-name': selectedFile.name,
-                'x-video-title': titleText
-            },
-            body: selectedFile // Streams the raw file bytes directly across the network wire!
+            body: uploadBundle // Browser natively scales boundary headers
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            alert(`🎉 Success! Video safely processed through Supabase and saved on GitHub.`);
+            alert(`🎉 Success! Video safely processed through server and saved on GitHub.`);
             
-            // Inject the object dynamically into your running array
+            // Build the card entry dynamically in frontend memory without hard reloads
             const newbornVideoCardObject = {
                 name: titleText,
-                thumbnail: "", // Trigger your automatic video-frame fallback!
+                thumbnail: "", // Keeps your excellent video-frame snapshot fallback active!
                 src: data.downloadUrl,
                 type: "video"
             };
@@ -226,23 +225,22 @@ async function publishContent() {
             vids.unshift(newbornVideoCardObject); 
             loadPage(); // Re-render your home grid timeline instantly!
 
-            // Clear out local form field values parameters memory slots
+            // Clear inputs text field caches completely
             uploadTitleInput.value = "";
             uploadDescInput.value = "";
             filePicker.value = "";
         } else {
-            alert(`Upload Blocked: ${data.error || 'Server error'}`);
+            alert(`Upload Blocked: ${data.message || 'Server error'}`);
         }
 
     } catch (err) {
         console.error("Cloud pipeline transaction crash:", err);
-        alert("Network Error linking with your cloud middleman layers.");
+        alert("Server is cold booting or offline. Give it 40 seconds to wake up and try again!");
     } finally {
         publishButton.disabled = false;
         publishButton.innerText = "Publish Content";
     }
 
-    // ✕ SLAM THE WINDOW DOOR: Remove your OS active layer frames cleanly to return home
     uploadStart.classList.remove('active');
     uploadEdit.classList.remove('active');
     uploadHeader.classList.remove('active');
