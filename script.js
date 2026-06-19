@@ -204,7 +204,7 @@ async function publishContent() {
 
     try {
         // 🚀 TARGET YOUR PERMANENT RENDER BACKEND STREAM ADDRESS LINK!
-        const response = await fetch('https://onrender.com', {
+        const response = await fetch('https://metube-serverside.onrender.com', {
             method: 'POST',
             body: uploadBundle // Browser natively scales boundary headers
         });
