@@ -41,41 +41,49 @@ let vids = [];
 
 // 2. ⚡️ THE AUTOMATIC DATABASE FETCH LOADER ⚡️
 async function initializeMediaCatalog() {
-    console.log("Contacting Supabase database...");
-
-    const SUPABASE_URL = "https://igjlltuasnylbqnsbugm.supabase.co";
-    const SUPABASE_KEY = "your-publishable-key-here"; // safe to expose
-
+    console.log("Contacting GitHub Pages storage network...");
+    
+    // 1. Get the base domain (e.g., http://127.0.0.1:3000 or https://github.io)
+    const baseOrigin = window.location.origin;
+    
+    // 2. Get the folder path and strip out any actual page filenames like 'index.html'
+    let folderPath = window.location.pathname;
+    if (folderPath.endsWith('.html')) {
+        // Splits the path by slashes, removes the filename, and joins it back together
+        folderPath = folderPath.substring(0, folderPath.lastIndexOf('/'));
+    }
+    
+    // 3. Ensure a clean trailing slash structure
+    if (!folderPath.endsWith('/')) {
+        folderPath += '/';
+    }
+    
+    // ⚡️ THE BULLETPROOF FIX: Perfectly clean root directory folder pathway! ⚡️
+    const liveJsonFeedUrl = `${baseOrigin}${folderPath}database.json?t=${Date.now()}`;
+    
+    console.log("Targeting direct repository file route:", liveJsonFeedUrl);
+    
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/videos?select=*&order=uploaded_at.desc`,
-            {
-                headers: {
-                    "apikey": SUPABASE_KEY,
-                    "Authorization": `Bearer ${SUPABASE_KEY}`,
-                }
-            }
-        );
-
+        const response = await fetch(liveJsonFeedUrl);
+        
         if (response.ok) {
-            const rows = await response.json();
-            vids = rows.map(row => ({
-                name:      row.name,
-                thumbnail: row.thumbnail_url || "",
-                src:       row.video_url,
-                type:      "video"
-            }));
-            console.log(`✓ Loaded ${vids.length} videos from Supabase.`);
+            vids = await response.json();
+            console.log(`✓ Success! Synchronized ${vids.length} media entries from database.json.`);
+            
+            if (typeof loadPage === 'function') {
+                loadPage(); 
+            }
         } else {
-            console.warn("Supabase returned error:", response.status);
-            vids = [];
+            console.warn(`Database path matched, but server returned error code: ${response.status}`);
+            if (typeof loadPage === 'function') loadPage();
         }
     } catch (err) {
-        console.error("Failed to load from Supabase:", err);
+        console.error("Critical storage tracking failure. Falling back to empty array:", err);
         vids = [];
+        if (typeof loadPage === 'function') {
+            loadPage();
+        }
     }
-
-    if (typeof loadPage === 'function') loadPage();
 }
 
 
