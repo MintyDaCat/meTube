@@ -94,45 +94,61 @@ async function loadPage() {
     homePage.classList.add('active');
 
     Array.from(vids).forEach(video => {
-
+        // 1. Create ONLY the single master structural parent wrapper element
         const videoCard = document.createElement('div');
-        const thumbnail = document.createElement('img');
-        const title = document.createElement('p');
-        const hoverOverlay = document.createElement('div');
-        videoCard.classList.add("video-card");
-        hoverOverlay.classList.add("hover-overlay");
-
-        title.textContent = video.name;
-
-
-        if (video.thumbnail && video.thumbnail.trim() !== "") {
-            thumbnail.src = video.thumbnail;
-        } else {
-            const fallbackVideo = document.createElement('video');
-            fallbackVideo.src = video.src;
-    
-            // ⚠️ CRITICAL CONFIGURATION: Stops the video from playing audio or wasting 
-            // network bandwidth, telling the browser to load ONLY the first frame snapshot!
-            fallbackVideo.preload = "metadata"; 
-            fallbackVideo.muted = true;
-            fallbackVideo.playsInline = true;
-            
-            // Optional: Snaps the frame to exactly 1 second in if the first frame is total black screen darkness
-            fallbackVideo.currentTime = 1; 
-
-            videoCard.appendChild(fallbackVideo);
-        }
-
+        videoCard.className = "video-card";
+        
+        // 2. Set your critical dataset markers for click listener calculations
         videoCard.dataset.src = video.src;
         videoCard.dataset.name = video.name;
-        videoCard.dataset.thumbnail = video.thumbnail;
+        videoCard.dataset.category = video.category || "vlogs";
 
+        // 3. Resolve your thumbnail fallback conditions instantly [INDEX]
+        const showThumbnail = video.thumbnail && video.thumbnail.trim() !== "";
+        const primaryCoverUrl = showThumbnail ? video.thumbnail : "https://picsum.photos";
+
+        // 4. ⚡️ THE MASTER INNER-HTML TEMPLATE STRING ⚡️
+        // This entirely replaces your old giant wall of appendChild() lines! [INDEX]
+        videoCard.innerHTML = `
+            <div class="video-card__media-wrapper">
+                <img class="video-card__thumbnail" src="${primaryCoverUrl}" alt="${video.name}">
+                <video class="video-card__preview-overlay" src="${video.src}" preload="metadata" muted playsinline></video>
+                <span class="longform-videocard-duration">--:--</span>
+            </div>
+            <p class="video-card__title">${video.name}</p>
+            <div class="hover-overlay"></div>
+        `;
+
+        // 5. BIND OPERATIONAL LOGIC ACTIONS DIRECTLY TO THE NEW LIVE NODES
+        // We look inside the card element to hook up tracking states and listeners
+        const hoverPreviewVideo = videoCard.querySelector('.video-card__preview-overlay');
+        const durationBadge = videoCard.querySelector('.longform-videocard-duration');
+
+        hoverPreviewVideo.currentTime = 1; // Snaps exactly 1 second in to dodge a dark opening frame [INDEX]
+
+        // Parse duration metadata natively straight from the .mp4 streaming link tracks [INDEX]
+        hoverPreviewVideo.addEventListener('loadedmetadata', () => {
+            const totalSecs = Math.floor(hoverPreviewVideo.duration);
+            const mins = Math.floor(totalSecs / 60);
+            const secs = (totalSecs % 60).toString().padStart(2, '0');
+            durationBadge.textContent = `${mins}:${secs}`;
+        });
+
+        // Activate your high-performance visual hover preview streams [INDEX]
+        videoCard.addEventListener('mouseenter', () => {
+            hoverPreviewVideo.play().catch(e => console.log("Buffering hover stream..."));
+        });
+        
+        videoCard.addEventListener('mouseleave', () => {
+            hoverPreviewVideo.pause();
+            hoverPreviewVideo.currentTime = 1; // Reset back to your baseline snapshot frame [INDEX]
+        });
+
+        // Launch your widescreen streaming player panel views when the card is clicked [INDEX]
         videoCard.addEventListener('click', openVideo);
 
+        // Drop the completely packaged component straight onto your main grid matrix div
         videoGridWrapper.appendChild(videoCard);
-        videoCard.appendChild(thumbnail);
-        videoCard.appendChild(title);
-        videoCard.appendChild(hoverOverlay);
     });
 }
 
