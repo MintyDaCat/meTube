@@ -147,6 +147,7 @@ body {
 }
 
 #video-grid-wrapper {
+    position: relative;
     display: flex !important;
     flex-wrap: wrap;
     flex-direction: row;
@@ -173,11 +174,11 @@ body {
 }
 
 .video-card {
-    background-color: #313131;
+    background-color: #1b1b1b;
     flex-grow: 0;
     width: 48%;
+    aspect-ratio: 14/9;
     flex-basis: 2;
-    aspect-ratio: 16/9;
     border-radius: 10px;
     display:flex;
     position: relative;
@@ -192,12 +193,24 @@ body {
     z-index: 1;
 }
 
-.video-card video {
+.video-card__thumbnail {
     position: absolute;
     border-radius: 10px;
     width: 100%;
     height: 100%;
     z-index: 1;
+    left: 0;
+    top: 0px;
+}
+
+.video-card__preview-overlay {
+    position: absolute;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    left: 0;
+    top: 0px;
 }
 
 .video-card p {
@@ -208,6 +221,28 @@ body {
     text-decoration: solid;
 
     text-shadow: 1px 1px 1px #000;
+}
+
+.longform-videocard-duration {
+    z-index: 2;
+    width: 10%;
+    position: absolute;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    margin: 10px;
+    padding: 5px;
+    background-color: #000000ac;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.video-card__media-wrapper {
+    position: absolute;
+    display: flex;
+    align-items: end;
+    justify-content: right;
+    width: 100%;
+    aspect-ratio: 16/9;
 }
 
 .hover-overlay {
