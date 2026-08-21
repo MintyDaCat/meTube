@@ -13,7 +13,6 @@ body {
     flex-direction: row;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
 }
 
 .main {
@@ -29,7 +28,7 @@ body {
     display: flex;
     flex-grow: 1;
     color: rgb(255, 255, 255);
-    height: 2.8rem;
+    height: 3.5rem;
     width: 100%;
     position: sticky;
     align-items: center;
@@ -151,11 +150,11 @@ body {
     display: flex !important;
     flex-wrap: wrap;
     flex-direction: row;
-    align-content: flex-start;
-    height: 100%;
+    justify-content: center;
     width: 100%;
     gap: 10px;
     padding: 10px;
+    overflow-y:auto;
 }
 
 #video-player {
@@ -163,14 +162,58 @@ body {
     padding: 10px;
 }
 
-.video-player.video-display {
-    display: flex;
+.video-main {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.video-display {
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #000000;
     flex-shrink: 1;
+    flex-direction: column;
     aspect-ratio: 16/9;
+    border-radius: 1rem;
+}
+
+.video-display video {
+    border-radius: 1rem;
+}
+
+.video-info {
+    background-color: #1b1b1b;
+    color: #fff;
+    padding: 10px;
+    height: 150px;
+    border-radius: 1rem;
+    display:flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.video-info p {
+    padding-bottom: 5px;
+    font-size: 1.5rem;
+}
+
+.video-info p1 {
+    color: #ffffff;
+}
+
+.video-info div {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #00000000;
+}
+
+.video-info div :hover {
+    background-color: #2d2d2d;
 }
 
 .video-card {
@@ -205,6 +248,7 @@ body {
     z-index: 1;
     left: 0;
     top: 0px;
+    object-fit: cover;
 }
 
 .video-card__preview-overlay {
@@ -215,6 +259,7 @@ body {
     z-index: 1;
     left: 0;
     top: 0px;
+    object-fit: cover;
 }
 
 .video-card p {
@@ -245,6 +290,8 @@ body {
 }
 
 .video-card__media-wrapper {
+    border-radius: 10px;
+    background-color: #141414;
     position: relative;
     display: flex;
     align-items: end;
@@ -432,9 +479,6 @@ body {
     .video-card {
         flex-basis: 100%;
     }
-    .top-bar {
-        height: 100px;
-    }
 }
 
 @media (min-width: 1200px) {
@@ -442,7 +486,7 @@ body {
         flex-basis: 32%;
     }
 
-    .video-player.video-display {
+    .video-main {
         width: 70%;
     }
     
