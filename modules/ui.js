@@ -1,7 +1,6 @@
 import { db } from "./db.js";
 import { popups } from '../assets/popups.js';
 import { api } from "./api.js";
-import { auth } from "./auth.js";
 
 const guidePanel = document.getElementById("guide-panel");
 const uploadHeader = document.getElementById("Upload-header");
@@ -26,8 +25,23 @@ let uploadOpen = false;
 let guideOpen = false;
 let currentPopup
 
-async function addVideoCard(video, container, className) {
-    // 1. Create ONLY the single master structural parent wrapper element
+async function loadPage(vids, container, className) {
+    if (!container) {
+        container = videoGridWrapper;
+    }
+
+    if (!className) {
+        className = "video-card"
+    }
+
+    container.innerHTML = "";
+
+    player.pause();
+
+    console.log(container);
+
+    Array.from(vids).forEach(video => {
+        // 1. Create ONLY the single master structural parent wrapper element
         const videoCard = document.createElement('div');
         videoCard.className = className;
         
@@ -35,30 +49,21 @@ async function addVideoCard(video, container, className) {
         videoCard.dataset.src = video.src;
         videoCard.dataset.name = video.name;
         videoCard.dataset.desc = video.desc;
-        videoCard.dataset.id = video.id;
         videoCard.dataset.category = video.category || "vlogs";
+
+        // 3. Resolve your thumbnail fallback conditions instantly [INDEX]
+        const showThumbnail = video.thumbnail && video.thumbnail.trim() !== "";
+        const primaryCoverUrl = showThumbnail ? video.thumbnail : "https://picsum.photos";
 
         // 4. ⚡️ THE MASTER INNER-HTML TEMPLATE STRING ⚡️
         // This entirely replaces your old giant wall of appendChild() lines! [INDEX]
-        let user = await db.lookupUser(video.userId);
-
-        videoCard.innerHTML = /*html*/ `
+        videoCard.innerHTML = `
             <div class="video-card__media-wrapper">
-                <img class="video-card__thumbnail" src="${video.thumbnail || ""}" alt="" onerror="this.remove();">
+                <img class="video-card__thumbnail" src="${primaryCoverUrl}" alt="${video.name}">
                 <video class="video-card__preview-overlay" src="${video.src}" preload="metadata" muted playsinline></video>
                 <span class="longform-videocard-duration">--:--</span>
             </div>
-            <div class="video-card__info-wrapper">
-                <div class="video-card__profile-pic">
-                    <img class="video-card__profile-pic_image" src="https://igjlltuasnylbqnsbugm.supabase.co/storage/v1/object/public/assets/metube%20deafault%20profile%20pic.jpg">
-                </div>
-                <div class="video-card__text-wrapper"> 
-                    <h3 class="video-card__title">${video.name}</h3>
-                    <p class="video-card__displayName">${user}</p>
-                    <p class="video-card__details">${video.views} views</p>
-                </div>
-            </div>
-            
+            <p class="video-card__title">${video.name}</p>
             <div class="hover-overlay"></div>
         `;
 
@@ -95,25 +100,6 @@ async function addVideoCard(video, container, className) {
 
         // Drop the completely packaged component straight onto your main grid matrix div
         container.appendChild(videoCard);
-}
-
-async function loadPage(vids, container, className) {
-    if (!container) {
-        container = videoGridWrapper;
-    }
-
-    if (!className) {
-        className = "video-card"
-    }
-
-    container.innerHTML = "";
-
-    player.pause();
-
-    console.log(container);
-
-    Array.from(vids).forEach(video => {
-        addVideoCard(video, container, className)
     });
 }
 
@@ -184,42 +170,11 @@ function showPopup(message, config = {}) {
                 publishButton.disabled = false;
                 publishButton.innerText = "Publish Content";
             })
-        } else if (message == 'login') {
-            const usernameInput = document.getElementById("login-container_email-input");
-            const passwordInput = document.getElementById("login-container_password-input");
-            const loginButton = document.getElementById("login-container_login-button");
-            const signUp = document.getElementById("login-container_sign-up");
-
-            loginButton.addEventListener('click', async () => {
-                await auth.signIn(usernameInput.value, passwordInput.value);
-                ui.updateProfileDropDown();
-                ui.showPopup('login');
-            })
-
-            signUp.addEventListener('click', () => {
-                ui.showPopup('signUp');
-            })
-        } else if (message == 'signUp') {
-            const usernameInput = document.getElementById("signUp-container_username-input");
-            const emailInput = document.getElementById("signUp-container_email-input");
-            const passwordInput = document.getElementById("signUp-container_password-input");
-            const passwordInputConfirm = document.getElementById("signUp-container_password-input-confirm");
-            const signUpButton = document.getElementById("signUp-container_signUp-button");
-
-            signUpButton.addEventListener('click', async () => {
-                if (passwordInput.textContent == passwordInputConfirm.textContent) {
-                    await auth.signUp(emailInput.value, usernameInput.value, passwordInput.value);
-                    ui.updateProfileDropDown();
-                    ui.showPopup("signUp");
-                }
-            })
         }
     }
 }
 
 async function openVideo(video) {
-    db.incrementVideoViewCountClientSide(video.id)
-
     homePage.classList.remove('active');
     videoPlayer.classList.add('active');
 
@@ -236,8 +191,11 @@ async function openVideo(video) {
     videoPlayerDescription.textContent = videoDescription;
 
     console.log(videoUrl)
+
     videoSource.src = videoUrl;
-    await player.load();
+
+    player.load();
+    player.play().catch(e => console.log("Waiting for user context to unmute..."));
 }
 
 function toggleGuide(value) {
@@ -286,16 +244,4 @@ function profile(value) {
     }
 }
 
-async function updateProfileDropDown() {
-    let currentUser = await auth.getCurrentUser();
-    
-    if (currentUser && currentUser.displayName) {
-        dropdownUserNumber.textContent = currentUser.displayName;
-    } else {
-        dropdownUserNumber.textContent = "Guest account";
-    }
-    
-    console.log(currentUser);
-}
-
-export const ui = {loadPage, toggleUploadPopup, openVideo, toggleGuide, toggleVideoInfo, profile, showPopup, updateProfileDropDown};
+export const ui = {loadPage, toggleUploadPopup, openVideo, toggleGuide, toggleVideoInfo, profile, showPopup};

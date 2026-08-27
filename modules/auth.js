@@ -1,36 +1,39 @@
 import { sb } from "./sb.js";
 
-async function signUp(email, username, password) {
-
-    console.log("attempting signup");
-
+async function signUp(username, displayName, password) {
+    // 1. Check username isn't taken first
     const { data: existing } = await sb
         .from("users")
         .select("username")
         .eq("username", username)
-        .maybeSingle();
+        .maybeSingle(); // ✅ won't 406 when no row found
 
     if (existing) return { error: { message: "Username already taken" } };
 
-    const { data, error } = await sb.auth.signUp({ email, password });
-    console.log("Full signup error:", JSON.stringify(error));
+    // 2. Create auth account
+    const fakeEmail = `${username}@metube.internal`;
+    const { data, error } = await sb.auth.signUp({ email: fakeEmail, password });
+    console.log("Signup error:", JSON.stringify(error));
     if (error) return { error };
 
-
+    // 3. Create public profile row
     const { error: profileErr } = await sb.from("users").insert({
         id:           data.user.id,
         username,
-        display_name: username, // defaults display name to username, user can change later
+        display_name: displayName,
     });
     if (profileErr) return { error: profileErr };
 
     return { data };
 }
 
-async function signIn(email, password) {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) return { error };
-    return { data };
+async function signIn(username, password) {
+    const fakeEmail = `${username}@metube.internal`;
+    const { data, error } = await sb.auth.signInWithPassword({
+        email: fakeEmail,
+        password
+    });
+    return { data, error };
 }
 
 async function signOut() {
@@ -43,22 +46,15 @@ async function getCurrentUser() {
 
     const { data: profile } = await sb
         .from("users")
-        .select("username, display_name, is_admin")
+        .select("username, display_name")
         .eq("id", user.id)
-        .maybeSingle();
+        .single();
 
     return {
         uuid:        user.id,
-        email:       user.email,
         username:    profile?.username,
         displayName: profile?.display_name,
-        isAdmin:     profile?.is_admin ?? false,
     };
 }
 
-async function isLoggedIn() {
-    const { data: { session } } = await sb.auth.getSession();
-    return session !== null;
-}
-
-export const auth = { signUp, signIn, signOut, getCurrentUser, isLoggedIn };
+export const auth = {signUp, signIn, signOut, getCurrentUser};
